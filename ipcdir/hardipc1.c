@@ -51,7 +51,6 @@ int main(){
             int i = 0, n = 0;
 
             while ((n=read(fdr, &A[i], 1)) > 0) {  //A이 나에게 쓴 글을 읽어 user배열에 저장한다.
-                //Tom이 쓴 문장 끝을 판변하는 로직
                 if (A[i] == '\0') break;
                 if (i == 78) {
                     A[++i] = '\0';
