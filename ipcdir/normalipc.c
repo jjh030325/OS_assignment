@@ -48,6 +48,7 @@ void receive_message() {
 
         // 종료 조건 확인
         if (strcmp(message, "exit\n") == 0) {
+
             printf("Exiting...\n");
             break;
         }
