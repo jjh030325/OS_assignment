@@ -145,17 +145,22 @@ struct timeval do_multi_thread() {
 
 // 시간 차이 출력
 void print_diff(struct timeval single_thread_time, struct timeval multi_thread_time) {
+	//싱글 쓰레드 결과, 시간
 	for(int i=1;i<MAX_STUDENTS;i+=(MAX_STUDENTS/10))
 	{
 		printf("%d등 %d점 %c학점\n", i, SglArr[0][i].score, SglArr[0][i].grade);
 	}
     printf("Single Thread: %ld.%06ld 초\n", single_thread_time.tv_sec, single_thread_time.tv_usec);
-
+	
+	//멀티 쓰레드 결과, 시간
 	for(int i=1;i<MAX_STUDENTS;i+=(MAX_STUDENTS/10))
 	{
 		printf("%d등 %d점 %c학점\n", i, MltArr[0][i].score, SglArr[0][i].grade);
 	}
     printf("Multi Thread: %ld.%06ld 초\n", multi_thread_time.tv_sec, multi_thread_time.tv_usec);
+	
+	//싱글, 멀티 비교
+	printf("멀티 쓰레드는 싱글 쓰레드보다 약 %.2lf 배\n", (single_thread_time.tv_sec + single_thread_time.tv_usec / 1000000.0)/(multi_thread_time.tv_sec + multi_thread_time.tv_usec / 1000000.0));
 }
 
 int main(int argc, char* argv[]) {
