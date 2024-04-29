@@ -32,6 +32,13 @@ void input_score()
 	}
 }
 
+int compfunc(const void* a, const void* b) {
+    struct Student* A = (struct Student *)a;
+    struct Student* B = (struct Student *)b;
+
+    return (B->score - A->score);
+}
+
 //성적 순으로 정렬한 후 등급을 매기는 함수
 void* sort_and_grade(int* total, int num, bool mltcheck)
 {
@@ -41,6 +48,7 @@ void* sort_and_grade(int* total, int num, bool mltcheck)
 	if(mltcheck)
 	{
 		//MltArr[num] 정렬
+		qsort((Student *)MltArr[num], MAX_STUDENTS, sizeof(Student), cmpfunc);
 
 		//등급매기기
 		for(int j=0;j<MAX_STUDENTS;j++)
@@ -62,6 +70,7 @@ void* sort_and_grade(int* total, int num, bool mltcheck)
 	}else
 	{
 		//SglArr[num] 정렬
+		qsort((Student *)MltArr[num], MAX_STUDENTS, sizeof(Student), cmpfunc);
 
 		//등급매기기
 		for(int j=0;j<MAX_STUDENTS;j++)
@@ -104,6 +113,19 @@ struct timeval do_multi_thread() {
     gettimeofday(&start, NULL);
 
     // 작업 수행
+	pthread_t threads[NUM_THREADS];
+    int thread_ids[NUM_THREADS];
+
+    // 쓰레드 생성
+    for (int i = 0; i < NUM_THREADS; i++) {
+        thread_ids[i] = i;
+        pthread_create(&threads[i], NULL, sort_and_grade(MAX_STUDENTS, i, true), (void*)&thread_ids[i]);
+    }
+
+    // 쓰레드 종료 대기
+    for (int i = 0; i < NUM_THREADS; i++) {
+        pthread_join(threads[i], NULL);
+    }
 
     gettimeofday(&end, NULL);
     return end - start;
@@ -115,7 +137,8 @@ void print_diff(struct timeval single_thread_time, struct timeval multi_thread_t
 }
 
 int main(int argc, char* argv[]) {
-    struct timeval single_thread_processing_time = do_single_thread();
+    input_score();
+	struct timeval single_thread_processing_time = do_single_thread();
     struct timeval multi_thread_processing_time = do_multi_thread();
 
     print_diff(single_thread_processing_time, multi_thread_processing_time);
