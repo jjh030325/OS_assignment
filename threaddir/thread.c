@@ -26,19 +26,61 @@ void input_score()
 		{
 			//아무리 성적이 랜덤이라도 0이면 서러우니 최저점 50..
 			//비교를 위한 것이니 랜덤이라도 싱글과 멀티 둘 다 같은 값이 들어가야함.
-			SglArr[i][j] = rand() % 50 + 50;
-			MltArr[i][j] = SglArr[i][j];
+			SglArr[i][j].score = rand() % 50 + 50;
+			MltArr[i][j].score = SglArr[i][j].score;
 		}
 	}
 }
 
 //성적 순으로 정렬한 후 등급을 매기는 함수
-void* sort_and_grade(int* total)
+void* sort_and_grade(int* total, int num, bool mltcheck)
 {
 	int a_cut = total * 3 / 10;
 	int b_cut = total * 6 / 10;
 
-	//정렬 시키기
+	if(mltcheck)
+	{
+		//MltArr[num] 정렬
+
+		//등급매기기
+		for(int j=0;j<MAX_STUDENTS;j++)
+		{
+			if(MltArr[num][j].score < 60)
+			{
+				MltArr[num][j].grade = 'F';
+			}else if(j < a_cut)
+			{
+				MltArr[num][j].grade = 'A';	
+			}else if(j < b_cut)
+			{
+				MltArr[num][j].grade = 'B';
+			}else
+			{
+				MltArr[num][j].grade = 'C';
+			}
+		}
+	}else
+	{
+		//SglArr[num] 정렬
+
+		//등급매기기
+		for(int j=0;j<MAX_STUDENTS;j++)
+		{
+			if(SglArr[num][j].score < 60)
+			{
+				SglArr[num][j].grade = 'F';
+			}else if(j < a_cut)
+			{
+				SglArr[num][j].grade = 'A';
+			}else if(j < b_cut)
+			{
+				SglArr[num][j].grade = 'B';
+			}else
+			{
+				Sglarr[num][j].grade = 'C';
+			}
+		}
+	}
 }
 
 // 단일 쓰레드
@@ -47,6 +89,10 @@ struct timeval do_single_thread() {
     gettimeofday(&start, NULL);
 
     // 작업 수행
+	for(int i=0;i<10;i++)
+	{
+		sort_and_grade(MAX_STUDENTS, i, false);	
+	}
 
     gettimeofday(&end, NULL);
     return end - start;
