@@ -2,10 +2,9 @@
 #include <pthread.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <time.h>
 
 #define NUM_BOOKS 10
-#define NUM_THREADS 10
+#define NUM_THREADS 20
 
 int books[NUM_BOOKS];
 pthread_mutex_t mutex_lock;
