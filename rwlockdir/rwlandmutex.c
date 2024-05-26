@@ -5,7 +5,7 @@
 #include <time.h>
 
 #define NUM_BOOKS 10
-#define NUM_THREADS 20
+#define NUM_THREADS 10
 
 int books[NUM_BOOKS];
 pthread_mutex_t mutex_lock;
@@ -27,11 +27,11 @@ void *check_books_mutex(void *arg) {
 
 //mutex에서 책을 대출
 void *borrow_book_mutex(void *arg) {
-    int book_num = rand() % NUM_BOOKS;
+    int book_num = 5;
     pthread_mutex_lock(&mutex_lock);
     if (books[book_num] == 0) {
         books[book_num] = 1; // 빌린 책
-        printf("Mutex - %d번 책을 빌렸습니다.\n", book_num);
+        printf("Mutex - 인기있는 %d번 책을 빌렸습니다!\n", book_num);
     } else {
         printf("Mutex - %d번 책은 이미 대출된 책입니다.\n", book_num);
     }
@@ -55,11 +55,11 @@ void *check_books_rwlock(void *arg) {
 
 //rwlock에서 책을 대출
 void *borrow_book_rwlock(void *arg) {
-    int book_num = rand() % NUM_BOOKS;
+    int book_num = 5;
     pthread_rwlock_wrlock(&rw_lock);
     if (books[book_num] == 0) {
         books[book_num] = 1; // 빌린 책
-        printf("RWLock - %d번 책을 빌렸습니다.\n", book_num);
+        printf("RWLock - 인기있는 %d번 책을 빌렸습니다!\n", book_num);
     } else {
         printf("RWLock - %d번 책은 이미 대출된 책입니다.\n", book_num);
     }
@@ -115,21 +115,19 @@ void run_rwlock() {
 }
 
 int main() {
-    srand(time(NULL));
-
     // Mutex time
     reset_books();
     clock_t start_mutex = clock();
     run_mutex();
     clock_t end_mutex = clock();
-    double time_mutex = (double)(start_mutex - end_mutex) / CLOCKS_PER_SEC;
+    double time_mutex = (double)(end_mutex - start_mutex) / CLOCKS_PER_SEC;
 
     // RWLock time
     reset_books();
     clock_t start_rwlock = clock();
     run_rwlock();
     clock_t end_rwlock = clock();
-    double time_rwlock = (double)(start_rwlock - end_rwlock) / CLOCKS_PER_SEC;
+    double time_rwlock = (double)(end_rwlock - start_rwlock) / CLOCKS_PER_SEC;
 
     printf("Mutex기반 : %f seconds\n", time_mutex);
     printf("RWLock기반 : %f seconds\n", time_rwlock);
