@@ -42,6 +42,10 @@ int main(int argc, char *argv[])
  
     if (connect(sock, (struct sockaddr*)&serv_addr, sizeof(serv_addr))==-1)
         error_handling(" conncet() error");
+
+	printf("client starts.\n");
+	printf("your name: %s\n", name);
+	printf("Connection successful.\n");
  
     pthread_create(&snd_thread, NULL, send_msg, (void*)&sock);
     pthread_create(&rcv_thread, NULL, recv_msg, (void*)&sock);
@@ -54,7 +58,7 @@ int main(int argc, char *argv[])
 void* send_msg(void* arg)
 {
     int sock=*((int*)arg);
-    char name_msg[NORMAL_SIZE+BUF_SIZE];
+    char name_msg[NORMAL_SIZE+BUF_SIZE+1];
     char myInfo[BUF_SIZE];
     char* who = NULL;
     char temp[BUF_SIZE];
@@ -68,7 +72,7 @@ void* send_msg(void* arg)
         fgets(msg, BUF_SIZE, stdin);
  
         // send message
-        sprintf(name_msg, "%s %s", name,msg);
+        sprintf(name_msg, "%s] %s", name, msg);
         write(sock, name_msg, strlen(name_msg));
     }
     return NULL;
@@ -90,12 +94,6 @@ void* recv_msg(void* arg)
     }
     return NULL;
 }
- 
-void menu()
-{
-    system("clear");
-    printf(" chat name   : %s \n", name);
-}    
  
 void error_handling(char* msg)
 {
