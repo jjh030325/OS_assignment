@@ -16,8 +16,6 @@ void * handle_clnt(void *arg);
 void send_msg(char *msg, int len);
 void error_handling(char *msg);
  
-/****************************/
- 
 int clnt_cnt=0;
 int clnt_socks[MAX_CLNT];
 pthread_mutex_t mutx;
@@ -63,7 +61,7 @@ int main(int argc, char *argv[])
  
         pthread_create(&t_id, NULL, handle_clnt, (void*)&clnt_sock);
         pthread_detach(t_id);
-        printf("Client%d: %s joined ", clnt_cnt, "um");
+        printf("Client%d: joined ", clnt_cnt);
     }
     close(serv_sock);
     return 0;
