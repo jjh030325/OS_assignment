@@ -5,7 +5,7 @@
 #include <arpa/inet.h>
 #include <sys/socket.h>
 #include <pthread.h>
-#include <time.h>
+#include <signal.h>
 
 #define BUF_SIZE 100
 #define NORMAL_SIZE 20
@@ -13,13 +13,14 @@
 void *send_msg(void *arg);
 void *recv_msg(void *arg);
 void error_handling(char *msg);
+void handle_exit(int sig);
 
+int sock;
 char name[NORMAL_SIZE] = "[DEFAULT]"; // 클라이언트 이름
 char msg[BUF_SIZE];                   // 메시지 버퍼
 
 int main(int argc, char *argv[])
 {
-    int sock;
     struct sockaddr_in serv_addr;
     pthread_t snd_thread, rcv_thread;
     void *thread_return;
@@ -29,6 +30,8 @@ int main(int argc, char *argv[])
         printf("Usage : %s <ip> <port> <name>\n", argv[0]);
         exit(1);
     }
+
+    signal(SIGINT, handle_exit);
 
     sprintf(name, "%s", argv[3]);
     sock = socket(PF_INET, SOCK_STREAM, 0);
@@ -97,3 +100,21 @@ void error_handling(char *msg)
     fputc('\n', stderr);
     exit(1);
 }
+
+void handle_exit(int sig)
+{
+    char c;
+    printf("채팅을 종료할까요? (Y/N): ");
+    c = getchar();
+    if (c == 'Y' || c == 'y')
+    {
+        close(sock);
+        printf("종료합니다.\n");
+        exit(0);
+    }
+    else
+    {
+		printf("채팅을 계속진행합니다.\n");
+    }
+}
+
