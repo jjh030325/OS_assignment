@@ -20,7 +20,7 @@ pthread_mutex_t mutx;
 
 int main(int argc, char *argv[])
 {
-    int serv_sock, clnt_sock;
+    int serv_sock, clnt_sock, idnum = 0;
     struct sockaddr_in serv_adr, clnt_adr;
     socklen_t clnt_adr_sz;
     pthread_t t_id;
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
 
         pthread_create(&t_id, NULL, handle_clnt, (void *)&clnt_sock);
         pthread_detach(t_id);
-        printf("Client %d connected\n", clnt_cnt);
+        printf("Client %d connected\n", ++idnum);
     }
     close(serv_sock);
     return 0;
