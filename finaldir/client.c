@@ -58,6 +58,9 @@ void *send_msg(void *arg)
     int sock = *((int *)arg);
     char name_msg[NORMAL_SIZE + BUF_SIZE + 1];
 
+    // 연결되었을 때 이름 전송
+    write(sock, name, strlen(name));
+
     while (1)
     {
         fgets(msg, BUF_SIZE, stdin);
