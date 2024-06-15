@@ -85,12 +85,11 @@ void *handle_clnt(void *arg)
         printf("client %d: %s joined.\n", clnt_sock-3, name);
     }
 
-    while ((str_len = read(clnt_sock, msg, sizeof(msg))) != 0)
+    while ((str_len = read(clnt_sock, msg, sizeof(msg) - 1)) != 0)
     {
         msg[str_len] = '\0'; // 읽어온 데이터 끝에 널 문자 추가
         send_msg(msg, str_len); // 클라이언트로부터 받은 메시지를 모든 클라이언트에게 전송
         printf("%s\n", msg); // 서버 콘솔에 클라이언트가 보낸 메시지 출력
-        memset(msg, 0, sizeof(msg)); // 버퍼 초기화
     }
 
     // 클라이언트가 연결을 끊었을 때
@@ -99,8 +98,9 @@ void *handle_clnt(void *arg)
     {
         if (clnt_sock == clnt_socks[i])
         {
-            while (i++ < clnt_cnt - 1)
-                clnt_socks[i] = clnt_socks[i + 1];
+            // 현재 클라이언트를 클라이언트 배열에서 제거하고 나머지 클라이언트들을 앞으로 이동
+            for (int j = i; j < clnt_cnt - 1; j++)
+                clnt_socks[j] = clnt_socks[j + 1];
             break;
         }
     }
