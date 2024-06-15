@@ -97,4 +97,3 @@ void error_handling(char *msg)
     fputc('\n', stderr);
     exit(1);
 }
-
