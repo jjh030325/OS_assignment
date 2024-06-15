@@ -117,4 +117,3 @@ void handle_exit(int sig)
 		printf("채팅을 계속진행합니다.\n");
     }
 }
-
