@@ -9,6 +9,7 @@
 
 #define BUF_SIZE 100
 #define MAX_CLNT 100
+#define NORMAL_SIZE 20
 
 void *handle_clnt(void *arg);
 void send_msg(char *msg, int len);
@@ -58,7 +59,6 @@ int main(int argc, char *argv[])
 
         pthread_create(&t_id, NULL, handle_clnt, (void *)&clnt_sock);
         pthread_detach(t_id);
-        printf("Client %d connected\n", clnt_cnt);
     }
     close(serv_sock);
     return 0;
@@ -69,6 +69,21 @@ void *handle_clnt(void *arg)
     int clnt_sock = *((int *)arg);
     int str_len = 0, i;
     char msg[BUF_SIZE];
+    char name[NORMAL_SIZE];
+
+    // 클라이언트가 연결되었을 때 이름을 읽음
+    if ((str_len = read(clnt_sock, name, sizeof(name) - 1)) != 0)
+    {
+        name[str_len] = '\0'; // 이름 끝에 널 문자 추가
+
+        // 새로운 클라이언트가 연결되었음을 모든 클라이언트에게 알림
+        char welcome_msg[BUF_SIZE];
+        sprintf(welcome_msg, "--- 새로운 사용자 %s이 들어왔습니다. ---\n", name);
+        send_msg(welcome_msg, strlen(welcome_msg));
+
+        // 서버 콘솔에 출력
+        printf("client %d: %s joined.\n", clnt_sock-3, name);
+    }
 
     while ((str_len = read(clnt_sock, msg, sizeof(msg))) != 0)
     {
@@ -92,6 +107,14 @@ void *handle_clnt(void *arg)
     clnt_cnt--;
     pthread_mutex_unlock(&mutx);
     close(clnt_sock);
+
+    // 클라이언트가 나갔음을 모든 클라이언트에게 알림
+    sprintf(msg, "--- %s님이 나갔습니다. ---\n", name);
+    send_msg(msg, strlen(msg));
+
+    // 서버 콘솔에 출력
+    printf("client %d: %s left.\n", clnt_sock-3, name);
+
     return NULL;
 }
 
