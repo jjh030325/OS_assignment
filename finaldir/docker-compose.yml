@@ -1,0 +1,43 @@
+version: '3'
+services:
+  chat-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    networks:
+      - finaldir_chat_net
+
+  client1:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    environment:
+      - SERVER_IP=chat-server
+      - SERVER_PORT=12345
+    networks:
+      - finaldir_chat_net
+
+  client2:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    environment:
+      - SERVER_IP=chat-server
+      - SERVER_PORT=12345
+    networks:
+      - finaldir_chat_net
+
+  client3:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    environment:
+      - SERVER_IP=chat-server
+      - SERVER_PORT=12345
+    networks:
+      - finaldir_chat_net
+
+networks:
+  finaldir_chat_net:
+    driver: bridge
+
